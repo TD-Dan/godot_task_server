@@ -22,3 +22,8 @@ https://github.com/kupoli/godot_task_server/wiki
 Example Godot project:
 
 https://github.com/kupoli/godot_task_server-examples
+
+
+## Tested with
+
+Godot 3.4.2
