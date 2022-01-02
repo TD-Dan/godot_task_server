@@ -13,5 +13,5 @@ git submodule add git@github.com:kupoli/godot_task_server.git
 
 ## Documentation
 
-Documnetation can be found in the wiki:
+Documentation can be found in the wiki:
 https://github.com/kupoli/godot_task_server/wiki
