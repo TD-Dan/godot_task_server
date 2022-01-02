@@ -26,4 +26,5 @@ https://github.com/kupoli/godot_task_server-examples
 
 ## Tested with
 
+Godot 3.3.2
 Godot 3.4.2
