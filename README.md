@@ -6,8 +6,10 @@ copy contents of this repo into your godot project /addons/godot_task_server fol
 
 OR
 
-Start a git bash in addons directory and:
-  git submodule add git@github.com:kupoli/godot_task_server.git
+Start a git bash in addons directory and
+```
+git submodule add git@github.com:kupoli/godot_task_server.git
+```
 
 ## Documentation
 
