@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/task_server/TaskServerDock.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot_task_server/TaskServerDock.gd" type="Script" id=1]
 
 [node name="TaskServer" type="Control"]
 anchor_right = 0.177
@@ -27,18 +27,18 @@ __meta__ = {
 }
 
 [node name="InfoLabel" type="Label" parent="Panel/VBoxContainer"]
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 14.0
 rect_pivot_offset = Vector2( 42, 7 )
-text = "TaskServer status"
+text = "Master TaskServer not found"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Button" type="Button" parent="Panel/VBoxContainer"]
-margin_left = 121.0
+margin_left = 41.0
 margin_top = 18.0
-margin_right = 229.0
+margin_right = 149.0
 margin_bottom = 38.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -49,12 +49,12 @@ __meta__ = {
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
 margin_top = 42.0
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 46.0
 
 [node name="ThreadInfoLabel" type="Label" parent="Panel/VBoxContainer"]
 margin_top = 50.0
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 115.0
 rect_pivot_offset = Vector2( 42, 7 )
 text = "Ticket nr: 0
@@ -67,17 +67,17 @@ __meta__ = {
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
 margin_top = 119.0
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 123.0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer"]
 margin_top = 127.0
-margin_right = 350.0
-margin_bottom = 646.0
+margin_right = 191.0
+margin_bottom = 359.0
 size_flags_vertical = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer"]
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 custom_constants/separation = -1
@@ -86,7 +86,7 @@ __meta__ = {
 }
 
 [node name="EventInfoLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/VBoxContainer2"]
-margin_right = 350.0
+margin_right = 191.0
 margin_bottom = 14.0
 rect_pivot_offset = Vector2( 42, 7 )
 text = "No events yet"

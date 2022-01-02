@@ -11,12 +11,12 @@ func _enter_tree():
 	print("TaskServer plugin loading...")
 	name = "TaskServerPlugin"
 	
-	var dock_res = preload("res://addons/task_server/TaskServerDock.tscn")
+	var dock_res = preload("res://addons/godot_task_server/TaskServerDock.tscn")
 	dock_res.resource_local_to_scene = true
 	dock = dock_res.instance()
 	add_control_to_dock(DOCK_SLOT_RIGHT_BL, dock)
 
-	add_autoload_singleton("TaskServer", "res://addons/task_server/TaskServer.gd")
+	add_autoload_singleton("TaskServer", "res://addons/godot_task_server/TaskServer.gd")
 	
 	#print(get_path())
 
