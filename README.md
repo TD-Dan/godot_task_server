@@ -1,5 +1,5 @@
 # godot_task_server
-Task Server for running background computations on paraller threads
+Task Server for running background computations in paraller threads
 
 ## Usage
 copy contents of this repo into your godot project /addons/godot_task_server folder
@@ -13,5 +13,11 @@ git submodule add git@github.com:kupoli/godot_task_server.git
 
 ## Documentation
 
-Documnetation can be found in the wiki:
+Documentation can be found in the wiki:
 https://github.com/kupoli/godot_task_server/wiki
+
+## Examples
+
+Example Godot project:
+
+https://github.com/kupoli/godot_task_server-examples
