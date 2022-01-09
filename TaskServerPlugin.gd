@@ -11,11 +11,14 @@ func _enter_tree():
 	print("TaskServer plugin loading...")
 	name = "TaskServerPlugin"
 	
-	var dock_res = preload("res://addons/godot_task_server/TaskServerDock.tscn")
-	dock_res.resource_local_to_scene = true
-	dock = dock_res.instance()
+	add_custom_type("TaskServerClient", "Node", preload("TaskServerClient.gd"), preload("icon_ts.png"))
+	
+	dock = preload("res://addons/godot_task_server/TaskServerDock.tscn").instance()
+	#var dock_res = preload("res://addons/godot_task_server/TaskServerDock.tscn")
+	#dock_res.resource_local_to_scene = true
+	#dock = dock_res.instance()
 	add_control_to_dock(DOCK_SLOT_RIGHT_BL, dock)
-
+	
 	add_autoload_singleton("TaskServer", "res://addons/godot_task_server/TaskServer.gd")
 	
 	#print(get_path())
@@ -35,6 +38,7 @@ func connect_to_taskserver():
 
 func _exit_tree():
 	print("TaskServer plugin unloading...")
+	remove_custom_type("TaskServerClient")
 	remove_control_from_docks(dock)
 	remove_autoload_singleton("TaskServer")
 	dock.free()
