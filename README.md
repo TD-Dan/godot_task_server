@@ -1,5 +1,12 @@
 # godot_task_server
-Task Server for running background computations in paraller threads
+Task Server for running background computations in paraller threads. A Task pool of sorts.
+
+### Features:
+* On the fly changeable thread pool size
+* Automatic: Add as an plugin and a TaskServer starts in the background automatically
+* Simple: Just add TaskServerClient node to your object and post tasks from your nodes gdscript
+* Optionally either provide own function to execute OR extend TaskServerWorkItem for more functionality
+* Custom task priorities per work item
 
 ## Usage
 copy contents of this repo into your godot project /addons/godot_task_server folder
