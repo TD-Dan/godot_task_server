@@ -61,13 +61,14 @@ func _work_execute(_thread_cache : Dictionary):
 func execute(_thread_cache : Dictionary):
 	if function:
 		if function.is_valid():
-			print("Executing with ticket %s !!!" % ticket)
-			function.call_func(data)
+			print("TaskServer: Executing task with ticket %s" % ticket)
+			data = function.call_func(data)
 	else:
 		print("   !!! Warning !!! Invalid function for work_item or execute function not defined in sub-class!")
 
 
 # Called after work item has been executed
+# Called inside main thread
 func _work_finalize():
 	if not cancel:
 		var time_start =  OS.get_ticks_msec()

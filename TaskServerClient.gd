@@ -9,6 +9,7 @@ class_name TaskServerClient
 # Only forwards signals for work items issued by TaskServerClient owner, ignoring other TaskServer signals
 # Optionally can process work items locally in main thread
 
+signal work_progress(work_item, progress)
 signal work_ready(work_item)
 
 var master_task_server
@@ -26,6 +27,7 @@ func get_master_taskserver():
 	# use earlier instance of task server if it can be found
 	master_task_server = get_node("/root/TaskServer")
 	if master_task_server:
+		master_task_server.connect("work_progress",self,"_work_item_progress")
 		master_task_server.connect("work_ready",self,"_work_item_is_ready")
 		#print("Found running TaskServer[%s]!" % master_task_server.get_instance_id())
 	else:
@@ -46,6 +48,10 @@ func post_work(work_item):
 			get_master_taskserver()
 		master_task_server.post_work(work_item)
 
+func _work_item_progress(work_item,progress):
+	if work_items.has(work_item):
+		#print("TaskServerClient found own item %s!" % work_item)
+		emit_signal("work_progress",work_item,progress)
 
 func _work_item_is_ready(work_item):
 	#print("TaskServerClient got ready item!")

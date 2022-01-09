@@ -9,6 +9,7 @@ enum PRIO {
 	HIGH
 }
 
+signal work_progress(work_item, progress)
 signal work_ready(work_item)
 
 signal status_report(ticket_counter, work_queue_length, thread_count, threads_active)
@@ -65,9 +66,6 @@ func _process(delta):
 	
 	if ready_item:
 		call_deferred("finalize_and_return", ready_item)
-#		ready_item._work_finalize()
-#		emit_signal("work_ready",ready_item)
-#		emit_status()
 
 
 func emit_status():
@@ -80,6 +78,8 @@ func emit_status():
 func pull_status_report():
 	emit_status()
 
+func send_work_progress(work_item, progress):
+	emit_signal("work_progress",work_item, progress)
 
 func finalize_and_return(work_item):
 	work_item._work_finalize()
@@ -162,6 +162,7 @@ func post_work(work_item : TaskServerWorkItem):
 	return ticket_counter
 
 
+# Thread worker main loop
 func _worker_thread(userdata):
 	print("%s: Worker thread running." % userdata.thread.get_id())
 	
@@ -169,7 +170,7 @@ func _worker_thread(userdata):
 	var thread_cache : Dictionary = {}
 	
 	while true:
-		semaphore.wait() # Wait until posted.
+		semaphore.wait() # Wait until work is posted.
 		
 		#if shutting down exit before work starts
 		mutex.lock()
@@ -191,13 +192,16 @@ func _worker_thread(userdata):
 		work_queue.erase(work_item)
 		mutex_work_queue.unlock()
 		
+		#signal start of work
+		call_deferred("send_work_progress", work_item, 0)
+		
 		#print("%s: Worker thread working on: t:%s p:%s" % [userdata.thread.get_id(), work_item.ticket, work_item.priority])
 		work_item._work_execute(thread_cache)
-	
+		
 		mutex_ready_queue.lock()
 		ready_queue.push_back(work_item)
 		mutex_ready_queue.unlock()
-	
+		
 		mutex_threads_busy.lock()
 		threads_busy = threads_busy - 1
 		mutex_threads_busy.unlock()
