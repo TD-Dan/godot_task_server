@@ -1,4 +1,4 @@
-# Task server
+# Task Server
 
 <img src="https://badgen.net/badge/version/v%201.1.0/green"> <img src="https://badgen.net/badge/Godot/v%204.2.1/blue?icon=https://godotengine.org/themes/godotengine/assets/press/icon_monochrome_dark.svg"> <img src="https://badgen.net/badge/license/MIT/blue"> 
 
