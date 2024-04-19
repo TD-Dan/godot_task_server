@@ -29,7 +29,9 @@ signal status_report(ticket_counter, work_queue_length, thread_count, threads_ac
 		_start_threads(num_threads)
 
 
-@export var priority_decay = 0.01: set = _set_priority_decay
+@export var priority_decay = 0.01:
+	set(nv):
+		priority_decay = clamp(nv, 0.0, 1.0)
 
 
 var threadPool = []
@@ -53,12 +55,9 @@ var mutex_ready_queue
 
 var taskserver_is_running = false
 
+
 func _ready():
 	start_up()
-
-
-func _set_priority_decay(nv):
-	priority_decay = clamp(nv, 0, 1)
 
 
 func _process(delta):

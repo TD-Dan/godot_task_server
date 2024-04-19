@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/godot_task_server/TaskServerDock.gd" id="1"]
 
-[node name="TaskServer" type="Control"]
+[node name="TaskServerDock" type="Control"]
 layout_mode = 3
 anchor_right = 0.177
 anchor_bottom = 0.597
@@ -22,13 +22,7 @@ anchor_bottom = 1.0
 
 [node name="InfoLabel" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
-text = "Master TaskServer not found"
-
-[node name="Button" type="Button" parent="Panel/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-text = "Edit TaskServer"
+text = "TaskServer 234310609525 is active"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -37,7 +31,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Ticket nr: 0
 Work queue length: 0
-Thread count: 0
+Thread count: 4
 Threads busy: 0"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
@@ -55,5 +49,3 @@ theme_override_constants/separation = -1
 [node name="EventInfoLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 text = "No events yet"
-
-[connection signal="pressed" from="Panel/VBoxContainer/Button" to="." method="_on_Button_pressed"]
