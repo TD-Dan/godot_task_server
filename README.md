@@ -23,13 +23,13 @@ git submodule add git@github.com:kupoli/godot_task_server.git
 
 Documentation can be found in the wiki:
 
-https://github.com/kupoli/godot_task_server/wiki
+https://github.com/TD-Dan/godot_task_server/wiki
 
 ## Examples
 
 Example Godot project:
 
-https://github.com/kupoli/godot_task_server-examples
+https://github.com/TD-Dan/godot_task_server-examples
 
 
 ## Tested with
