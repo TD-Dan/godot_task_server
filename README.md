@@ -1,4 +1,7 @@
-# godot_task_server
+# Task Server
+
+<img src="https://badgen.net/badge/version/v%201.1.0/green"> <img src="https://badgen.net/badge/Godot/v%204.2.1/blue?icon=https://godotengine.org/themes/godotengine/assets/press/icon_monochrome_dark.svg"> <img src="https://badgen.net/badge/license/MIT/blue"> 
+
 Task Server for running background computations in paraller threads. A Task pool of sorts.
 
 ### Features:
@@ -30,8 +33,3 @@ https://github.com/TD-Dan/godot_task_server/wiki
 Example Godot project:
 
 https://github.com/TD-Dan/godot_task_server-examples
-
-
-## Tested with
-
-Godot 3.4.2
