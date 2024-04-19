@@ -1,14 +1,13 @@
-tool
+@tool
 
 extends Control
 
-onready var info_label = $Panel/VBoxContainer/InfoLabel
-onready var thread_info_label = $Panel/VBoxContainer/ThreadInfoLabel
-onready var event_info_container = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/
-onready var event_info_label = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/EventInfoLabel
+@onready var info_label = $Panel/VBoxContainer/InfoLabel
+@onready var thread_info_label = $Panel/VBoxContainer/ThreadInfoLabel
+@onready var event_info_container = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2
+@onready var event_info_label = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/EventInfoLabel
 
-var master_task_server = null
-var editor_interface = null
+var autoload_task_server = null
 
 func _ready():	
 	info_label.text = "Connecting to TaskServer..."
@@ -16,29 +15,23 @@ func _ready():
 
 
 func connect_to_taskserver():
-	master_task_server = get_node("/root/TaskServer")
+	autoload_task_server = get_node("/root/TaskServer")
 	
-	if master_task_server:
-		print("TaskServerDock found master TaskServer.")
-	else:
-		print("TaskServerDock can't find master TaskServer. Please add TaskServer.gd as Autoload!")
-		info_label.text = "Master TaskServer not found"
+	if not autoload_task_server:
+		push_warning("TaskServerDock can't find primary TaskServer. something wrong with setting TaskServer.gd as Autoload!")
+		info_label.text = "Primary TaskServer not found"
 		return
+	else:
+		print("TaskServerDock found primary TaskServer.")
 	
-	master_task_server.connect("work_ready", self, "_on_work_ready")
-	master_task_server.connect("status_report", self, "_on_status_report")
+	autoload_task_server.connect("work_ready", Callable(self, "_on_work_ready"))
+	autoload_task_server.connect("status_report", Callable(self, "_on_status_report"))
 	
-	editor_interface = get_node("/root/EditorNode/TaskServerPlugin").get_editor_interface()
 	
-	info_label.text = "TaskServer %s is active" % master_task_server.get_instance_id()
+	info_label.text = "TaskServer %s is active" % autoload_task_server.get_instance_id()
 	thread_info_label.text = "Waiting for thread status.."
 	
-	master_task_server.pull_status_report()
-
-
-func _on_Button_pressed():
-	if editor_interface:
-		editor_interface.inspect_object(master_task_server)
+	autoload_task_server.pull_status_report()
 
 
 func _on_work_ready(work_item):

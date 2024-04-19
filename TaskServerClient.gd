@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 
 class_name TaskServerClient
@@ -14,7 +14,7 @@ signal work_ready(work_item)
 
 var master_task_server
 
-export var process_locally = false
+@export var process_locally = false
 var local_cache : Dictionary = {}
 
 var work_items : Array = []
@@ -27,8 +27,8 @@ func get_master_taskserver():
 	# use earlier instance of task server if it can be found
 	master_task_server = get_node("/root/TaskServer")
 	if master_task_server:
-		master_task_server.connect("work_progress",self,"_work_item_progress")
-		master_task_server.connect("work_ready",self,"_work_item_is_ready")
+		master_task_server.connect("work_progress", Callable(self, "_work_item_progress"))
+		master_task_server.connect("work_ready", Callable(self, "_work_item_is_ready"))
 		#print("Found running TaskServer[%s]!" % master_task_server.get_instance_id())
 	else:
 		print("Master task server not loaded!")

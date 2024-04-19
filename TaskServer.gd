@@ -1,23 +1,41 @@
-tool
+@tool
+
 extends Node
 
-#class_name TaskServer
+## class_name TaskServer
 
-enum PRIO {
-	LOW,
-	MEDIUM,
-	HIGH
-}
+## TaskServer
+##
+## Manages threads and schedules tasks for them
+##
+
 
 signal work_progress(work_item, progress)
 signal work_ready(work_item)
 
 signal status_report(ticket_counter, work_queue_length, thread_count, threads_active)
 
+## Number of threads to use
+@export var num_threads = 4:
+	set(new_value):
+		num_threads = new_value
+		_close_threads()
+		_start_threads(num_threads)
+
+
+@export var thread_priority: Thread.Priority = Thread.PRIORITY_NORMAL:
+	set(new_value):
+		_close_threads()
+		_start_threads(num_threads)
+
+
+@export var priority_decay = 0.01:
+	set(nv):
+		priority_decay = clamp(nv, 0.0, 1.0)
+
+
 var threadPool = []
-export var num_threads = 4 setget _set_num_threads
-export(PRIO) var thread_priority = PRIO.MEDIUM setget _set_thread_priority
-export var priority_decay = 0.01 setget _set_priority_decay
+
 
 var threads_busy = 0
 var mutex_threads_busy
@@ -37,23 +55,9 @@ var mutex_ready_queue
 
 var taskserver_is_running = false
 
+
 func _ready():
 	start_up()
-
-func _set_num_threads(new_value):
-	num_threads = new_value
-	
-	close_threads()
-	
-	start_threads(num_threads)
-
-func _set_thread_priority(new_value):
-	thread_priority = clamp(new_value,PRIO.LOW,PRIO.HIGH)
-	
-	_set_num_threads(num_threads)
-
-func _set_priority_decay(nv):
-	priority_decay = clamp(nv, 0, 1)
 
 
 func _process(delta):
@@ -102,13 +106,32 @@ func start_up():
 	semaphore = Semaphore.new()
 	exit_thread = false
 	
-	start_threads(num_threads)
+	_start_threads(num_threads)
 	
 	taskserver_is_running = true
 
 
+## Post TaskServerWorkItem to first worker thread available
+func post_work(work_item : TaskServerWorkItem):
+	#print("TaskServer received work!")
+	if not taskserver_is_running:
+		start_up()
+	
+	ticket_counter = ticket_counter + 1
+	work_item.ticket = ticket_counter
+	work_item._work_prepare()
+	
+	mutex_work_queue.lock()
+	work_queue.push_back(work_item)
+	mutex_work_queue.unlock()
+	
+	semaphore.post()
+	
+	return ticket_counter
+
+
 # Starts specified number of threads
-func start_threads(count):
+func _start_threads(count):
 	print("Starting %s threads" % count)
 	
 	mutex.lock()
@@ -117,14 +140,14 @@ func start_threads(count):
 	
 	for i in range(count):
 		var ntp_thread = Thread.new()
-		ntp_thread.start(self, "_worker_thread", {"thread":ntp_thread}, thread_priority)
+		ntp_thread.start(Callable(self, "_worker_thread").bind({"thread":ntp_thread}), thread_priority)
 		threadPool.push_back(ntp_thread)
 	
 	emit_status()
 
 
 # Closes all running threads.
-func close_threads():
+func _close_threads():
 	
 	mutex.lock()
 	exit_thread = true
@@ -142,24 +165,6 @@ func close_threads():
 	threadPool.clear()
 	
 	emit_status()
-
-# Post TaskServerWorkItem to first worker thread available
-func post_work(work_item : TaskServerWorkItem):
-	#print("TaskServer received work!")
-	if not taskserver_is_running:
-		start_up()
-	
-	ticket_counter = ticket_counter + 1
-	work_item.ticket = ticket_counter
-	work_item._work_prepare()
-	
-	mutex_work_queue.lock()
-	work_queue.push_back(work_item)
-	mutex_work_queue.unlock()
-	
-	semaphore.post()
-	
-	return ticket_counter
 
 
 # Thread worker main loop
@@ -211,4 +216,4 @@ func _worker_thread(userdata):
 
 func _exit_tree():
 	print("TaskServer closing down...")
-	close_threads()
+	_close_threads()

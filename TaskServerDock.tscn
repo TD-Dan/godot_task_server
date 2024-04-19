@@ -1,97 +1,51 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://datrhxrev4u75"]
 
-[ext_resource path="res://addons/godot_task_server/TaskServerDock.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/godot_task_server/TaskServerDock.gd" id="1"]
 
-[node name="TaskServer" type="Control"]
+[node name="TaskServerDock" type="Control"]
+layout_mode = 3
 anchor_right = 0.177
 anchor_bottom = 0.597
-margin_right = 10.16
-margin_bottom = 1.23999
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_right = 10.16
+offset_bottom = 1.23999
+script = ExtResource("1")
 
 [node name="Panel" type="Panel" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="InfoLabel" type="Label" parent="Panel/VBoxContainer"]
-margin_right = 191.0
-margin_bottom = 14.0
-rect_pivot_offset = Vector2( 42, 7 )
-text = "Master TaskServer not found"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Button" type="Button" parent="Panel/VBoxContainer"]
-margin_left = 41.0
-margin_top = 18.0
-margin_right = 149.0
-margin_bottom = 38.0
-size_flags_horizontal = 4
-size_flags_vertical = 0
-text = "Edit TaskServer"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
+text = "TaskServer 234310609525 is active"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
-margin_top = 42.0
-margin_right = 191.0
-margin_bottom = 46.0
+layout_mode = 2
 
 [node name="ThreadInfoLabel" type="Label" parent="Panel/VBoxContainer"]
-margin_top = 50.0
-margin_right = 191.0
-margin_bottom = 115.0
-rect_pivot_offset = Vector2( 42, 7 )
+layout_mode = 2
 text = "Ticket nr: 0
 Work queue length: 0
-Thread count: 0
+Thread count: 4
 Threads busy: 0"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
-margin_top = 119.0
-margin_right = 191.0
-margin_bottom = 123.0
+layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer"]
-margin_top = 127.0
-margin_right = 191.0
-margin_bottom = 359.0
+layout_mode = 2
 size_flags_vertical = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer"]
-margin_right = 191.0
-margin_bottom = 14.0
+layout_mode = 2
 size_flags_horizontal = 3
-custom_constants/separation = -1
-__meta__ = {
-"_edit_use_anchors_": false
-}
+theme_override_constants/separation = -1
 
 [node name="EventInfoLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/VBoxContainer2"]
-margin_right = 191.0
-margin_bottom = 14.0
-rect_pivot_offset = Vector2( 42, 7 )
+layout_mode = 2
 text = "No events yet"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[connection signal="pressed" from="Panel/VBoxContainer/Button" to="." method="_on_Button_pressed"]
