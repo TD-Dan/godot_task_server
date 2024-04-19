@@ -1,11 +1,11 @@
-tool
+@tool
 
 extends Control
 
-onready var info_label = $Panel/VBoxContainer/InfoLabel
-onready var thread_info_label = $Panel/VBoxContainer/ThreadInfoLabel
-onready var event_info_container = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/
-onready var event_info_label = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/EventInfoLabel
+@onready var info_label = $Panel/VBoxContainer/InfoLabel
+@onready var thread_info_label = $Panel/VBoxContainer/ThreadInfoLabel
+@onready var event_info_container = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2
+@onready var event_info_label = $Panel/VBoxContainer/ScrollContainer/VBoxContainer2/EventInfoLabel
 
 var master_task_server = null
 var editor_interface = null
@@ -25,8 +25,8 @@ func connect_to_taskserver():
 		info_label.text = "Master TaskServer not found"
 		return
 	
-	master_task_server.connect("work_ready", self, "_on_work_ready")
-	master_task_server.connect("status_report", self, "_on_status_report")
+	master_task_server.connect("work_ready", Callable(self, "_on_work_ready"))
+	master_task_server.connect("status_report", Callable(self, "_on_status_report"))
 	
 	editor_interface = get_node("/root/EditorNode/TaskServerPlugin").get_editor_interface()
 	

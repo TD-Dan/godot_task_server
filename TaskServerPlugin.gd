@@ -1,4 +1,4 @@
-tool
+@tool
 
 extends EditorPlugin
 
@@ -13,7 +13,7 @@ func _enter_tree():
 	
 	add_custom_type("TaskServerClient", "Node", preload("TaskServerClient.gd"), preload("icon_ts.png"))
 	
-	dock = preload("res://addons/godot_task_server/TaskServerDock.tscn").instance()
+	dock = preload("res://addons/godot_task_server/TaskServerDock.tscn").instantiate()
 	#var dock_res = preload("res://addons/godot_task_server/TaskServerDock.tscn")
 	#dock_res.resource_local_to_scene = true
 	#dock = dock_res.instance()
