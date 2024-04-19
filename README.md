@@ -33,8 +33,3 @@ https://github.com/TD-Dan/godot_task_server/wiki
 Example Godot project:
 
 https://github.com/TD-Dan/godot_task_server-examples
-
-
-## Tested with
-
-Godot 3.4.2
