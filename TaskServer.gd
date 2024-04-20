@@ -32,7 +32,7 @@ signal status_report(ticket_counter, work_queue_length, thread_count, threads_ac
 
 ## Ensure that no tasks are left undone forever by increasing priorities over time.
 ## This amount is added to each unstarted WorkItem over one second to make them gradually more important
-@export var priority_increase_per_second = 0.01
+@export var priority_increase_per_second = 1.0
 
 
 # Worker threads
@@ -66,8 +66,10 @@ func _ready():
 
 
 func _process(delta):
+	mutex_work_queue.lock()
 	for wi in work_queue:
 		wi.priority += priority_increase_per_second * delta
+	mutex_work_queue.unlock()
 	
 	mutex_ready_queue.lock()
 	var ready_item = ready_queue.pop_front()
