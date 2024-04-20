@@ -28,7 +28,7 @@ func connect_to_taskserver():
 	autoload_task_server.connect("status_report", Callable(self, "_on_status_report"))
 	
 	
-	info_label.text = "TaskServer %s is active" % autoload_task_server.get_instance_id()
+	info_label.text = "TaskServer is active"
 	thread_info_label.text = "Waiting for thread status.."
 	
 	autoload_task_server.pull_status_report()
@@ -49,3 +49,7 @@ func _on_work_ready(work_item):
 
 func _on_status_report(ticket_counter, work_queue_length, thread_count, threads_active):
 	thread_info_label.text = "Ticket nr: %s\nWork queue length: %s\nThread count: %s\nThreads busy: %s" % [ticket_counter, work_queue_length, thread_count, threads_active]
+
+
+func _on_button_pressed():
+	EditorInterface.edit_node(autoload_task_server)

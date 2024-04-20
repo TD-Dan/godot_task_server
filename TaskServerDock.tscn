@@ -21,8 +21,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="InfoLabel" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "TaskServer 235770227319 is active"
+text = "TaskServer is active"
+autowrap_mode = 2
+
+[node name="Button" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Edit TaskServer settings"
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -31,7 +37,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Ticket nr: 0
 Work queue length: 0
-Thread count: 0
+Thread count: 4
 Threads busy: 0"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
@@ -49,3 +55,5 @@ theme_override_constants/separation = -1
 [node name="EventInfoLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/VBoxContainer2"]
 layout_mode = 2
 text = "No events yet"
+
+[connection signal="pressed" from="Panel/VBoxContainer/Button" to="." method="_on_button_pressed"]

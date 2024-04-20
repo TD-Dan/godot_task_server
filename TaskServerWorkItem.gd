@@ -2,7 +2,7 @@ extends RefCounted #inherit RefCounted for automatic memory management, more lig
 
 class_name TaskServerWorkItem
 
-
+## Performance tracking of WorkItems
 class TaskItemMetaData:
 	var name:String = "workitem"
 	var time_s_prepare:float = 0
@@ -10,13 +10,13 @@ class TaskItemMetaData:
 	var time_s_finalize:float = 0
 
 
+## Unique ascending number assigned to this work item, 
 var ticket : int
 
-## Lower value means more priority, capped to positive values and 0.0 being most important
-## TODO this could just be linear time instead of logarithmic
-var priority : float = 10.0:
-	set(nv):
-		priority = max(nv, 0)
+
+## How important is this work item. Larger number means more priority
+var priority : float = 0.0
+
 
 ## Worker function to call upon execution
 var function : Callable

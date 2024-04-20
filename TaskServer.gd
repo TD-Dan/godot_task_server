@@ -15,6 +15,7 @@ signal work_ready(work_item)
 
 signal status_report(ticket_counter, work_queue_length, thread_count, threads_active)
 
+
 ## Number of threads to use
 @export var num_threads = 4:
 	set(new_value):
@@ -29,29 +30,33 @@ signal status_report(ticket_counter, work_queue_length, thread_count, threads_ac
 		_start_threads(num_threads)
 
 
-@export var priority_decay = 0.01:
-	set(nv):
-		priority_decay = clamp(nv, 0.0, 1.0)
+## Ensure that no tasks are left undone forever by increasing priorities over time.
+## This amount is added to each unstarted WorkItem over one second to make them gradually more important
+@export var priority_increase_per_second = 0.01
 
 
+# Worker threads
 var threadPool = []
 
-
+# How many threads are working on a WorkItem
 var threads_busy = 0
-var mutex_threads_busy
+var threads_busy_mutex : Mutex = Mutex.new()
 
 
-var mutex
-var semaphore
-var exit_thread
+var semaphore = Semaphore.new()
+
+
+# Used to signal all threads to stop themselves
+var exit_threads : bool = false
+var exit_threads_mutex : Mutex = Mutex.new()
 
 var ticket_counter = 0
 
 var work_queue = []
-var mutex_work_queue
+var mutex_work_queue : Mutex = Mutex.new()
 
 var ready_queue = []
-var mutex_ready_queue
+var mutex_ready_queue : Mutex = Mutex.new()
 
 var taskserver_is_running = false
 
@@ -62,7 +67,7 @@ func _ready():
 
 func _process(delta):
 	for wi in work_queue:
-		wi.priority -= wi.priority * priority_decay * delta
+		wi.priority += priority_increase_per_second * delta
 	
 	mutex_ready_queue.lock()
 	var ready_item = ready_queue.pop_front()
@@ -93,18 +98,17 @@ func finalize_and_return(work_item):
 
 func start_up():
 	if taskserver_is_running:
+		push_warning("%s: already running. Stop server first before starting again." % self)
 		return
 	
 	print("TaskServer[%s] starting up..." % get_instance_id())
 	# Find how many threads are supported
 	
+	
 	# Launch worker threads
-	mutex = Mutex.new()
-	mutex_work_queue = Mutex.new()
-	mutex_ready_queue = Mutex.new()
-	mutex_threads_busy = Mutex.new()
-	semaphore = Semaphore.new()
-	exit_thread = false
+	exit_threads_mutex.lock()
+	exit_threads = false
+	exit_threads_mutex.unlock()
 	
 	_start_threads(num_threads)
 	
@@ -134,9 +138,9 @@ func post_work(work_item : TaskServerWorkItem):
 func _start_threads(count):
 	print("Starting %s threads" % count)
 	
-	mutex.lock()
-	exit_thread = false
-	mutex.unlock()
+	exit_threads_mutex.lock()
+	exit_threads = false
+	exit_threads_mutex.unlock()
 	
 	for i in range(count):
 		var ntp_thread = Thread.new()
@@ -149,9 +153,9 @@ func _start_threads(count):
 # Closes all running threads.
 func _close_threads():
 	
-	mutex.lock()
-	exit_thread = true
-	mutex.unlock()
+	exit_threads_mutex.lock()
+	exit_threads = true
+	exit_threads_mutex.unlock()
 	
 	# Unblock by posting.
 	for i in range(threadPool.size()):
@@ -177,22 +181,22 @@ func _worker_thread(userdata):
 	while true:
 		semaphore.wait() # Wait until work is posted.
 		
-		#if shutting down exit before work starts
-		mutex.lock()
-		var should_exit = exit_thread # Protect with Mutex.
-		mutex.unlock()
+		# If TaskServer is shutting down exit before work starts
+		exit_threads_mutex.lock()
+		var should_exit = exit_threads 
+		exit_threads_mutex.unlock()
 		if should_exit:
 			break
 		
-		mutex_threads_busy.lock()
+		threads_busy_mutex.lock()
 		threads_busy = threads_busy + 1
-		mutex_threads_busy.unlock()
+		threads_busy_mutex.unlock()
 		
 		mutex_work_queue.lock()
-		# search for lowest priority
+		# search for highest priority
 		var work_item = work_queue[0]
 		for wi in work_queue:
-			if wi.priority < work_item.priority:
+			if wi.priority > work_item.priority:
 				work_item = wi
 		work_queue.erase(work_item)
 		mutex_work_queue.unlock()
@@ -207,9 +211,9 @@ func _worker_thread(userdata):
 		ready_queue.push_back(work_item)
 		mutex_ready_queue.unlock()
 		
-		mutex_threads_busy.lock()
+		threads_busy_mutex.lock()
 		threads_busy = threads_busy - 1
-		mutex_threads_busy.unlock()
+		threads_busy_mutex.unlock()
 		
 	print("%s: Worker thread exit" % userdata.thread.get_id())
 
