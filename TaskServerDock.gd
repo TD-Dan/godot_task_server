@@ -15,10 +15,10 @@ func _ready():
 
 
 func connect_to_taskserver():
-	autoload_task_server = get_node("/root/TaskServer")
+	autoload_task_server = get_node_or_null("/root/TaskServer")
 	
 	if not autoload_task_server:
-		push_warning("TaskServerDock can't find primary TaskServer. something wrong with setting TaskServer.gd as Autoload!")
+		push_warning("TaskServerDock can't find primary TaskServer. something wrong with setting TaskServer.gd as Autoload?")
 		info_label.text = "Primary TaskServer not found"
 		return
 	else:
