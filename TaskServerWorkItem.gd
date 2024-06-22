@@ -14,7 +14,10 @@ class TaskItemMetaData:
 var ticket : int
 
 
-## How important is this work item. Larger number means more priority
+## How important is this work item. Larger number means more priority. Unit is seconds.
+## F.ex. priority 1.0 means this task should take priority over any task issued with priority 0.0 during the next second.
+## Priority -1.0 would mean that this task yields for default priority 0.0 tasks for 1 second.
+## Default 0.0 priority tries to compute as fast as possible if no more important tasks are present.
 var priority : float = 0.0
 
 
@@ -85,7 +88,10 @@ func execute(_thread_cache : Dictionary):
 	if function:
 		if function.is_valid():
 			print("TaskServer: Executing task with ticket %s" % ticket)
-			data = function.call(data)
+			if data:
+				data = function.call(data)
+			else:
+				function.call()
 	else:
 		print("   !!! Warning !!! Invalid function for work_item or execute function not defined in sub-class!")
 

@@ -32,10 +32,33 @@ layout_mode = 2
 text = "TaskServer is active"
 autowrap_mode = 2
 
-[node name="SettingsButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SettingsButton" type="Button" parent="Panel/VBoxContainer/HFlowContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Edit TaskServer settings"
+
+[node name="Control" type="GridContainer" parent="Panel/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HFlowContainer/Control"]
+layout_mode = 2
+tooltip_text = "Number of threads to use:
+0 for max cores
+-n for max cores - n
+will be clipped to system max possible"
+mouse_filter = 1
+text = "Threads"
+
+[node name="ThreadCountSpinBox" type="SpinBox" parent="Panel/VBoxContainer/HFlowContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -1024.0
+max_value = 1024.0
+value = 19.0
 
 [node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -44,7 +67,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Ticket nr: 0
 Work queue length: 0
-Thread count: 4
+Thread count: 38
 Threads busy: 0"
 
 [node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
@@ -70,4 +93,5 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 10
 text = "No events yet"
 
-[connection signal="pressed" from="Panel/VBoxContainer/SettingsButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/HFlowContainer/SettingsButton" to="." method="_on_button_pressed"]
+[connection signal="value_changed" from="Panel/VBoxContainer/HFlowContainer/Control/ThreadCountSpinBox" to="." method="_on_thread_count_spin_box_value_changed"]

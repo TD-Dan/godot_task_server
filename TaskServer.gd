@@ -16,10 +16,21 @@ signal work_ready(work_item)
 signal status_report(ticket_counter, work_queue_length, thread_count, threads_active)
 
 
-## Number of threads to use
-@export var num_threads = 4:
+## Number of threads to use. 0 to use system max cores. Negative numbers to use (system max cores - number), f.ex. -2 = system max 16 cores - 2 = 14 threads.
+@export var num_threads : int = -1:
 	set(new_value):
+		print("setting num threads from %s to %s" % [num_threads, new_value])
 		num_threads = new_value
+		var max_threads = OS.get_processor_count()
+		print("MAX THREADS: %s" % max_threads)
+		
+		if num_threads < 0:
+			num_threads = max_threads + num_threads
+		if num_threads == 0 or num_threads > max_threads:
+			num_threads = max_threads
+		
+		print("%s: requested %s threads; setting thread count to %s" % [self, new_value, num_threads])
+		
 		_close_threads()
 		_start_threads(num_threads)
 
@@ -32,7 +43,7 @@ signal status_report(ticket_counter, work_queue_length, thread_count, threads_ac
 
 ## Ensure that no tasks are left undone forever by increasing priorities over time.
 ## This amount is added to each unstarted WorkItem over one second to make them gradually more important
-@export var priority_increase_per_second = 1.0
+@export var task_priority_increase_per_second = 1.0
 
 
 # Worker threads
@@ -68,7 +79,7 @@ func _ready():
 func _process(delta):
 	mutex_work_queue.lock()
 	for wi in work_queue:
-		wi.priority += priority_increase_per_second * delta
+		wi.priority += task_priority_increase_per_second * delta
 	mutex_work_queue.unlock()
 	
 	mutex_ready_queue.lock()
@@ -104,17 +115,16 @@ func start_up():
 		return
 	
 	print("TaskServer[%s] starting up..." % get_instance_id())
-	# Find how many threads are supported
 	
-	
-	# Launch worker threads
-	exit_threads_mutex.lock()
-	exit_threads = false
-	exit_threads_mutex.unlock()
-	
-	_start_threads(num_threads)
+	# Lauch threads
+	num_threads = num_threads
 	
 	taskserver_is_running = true
+
+# Get a new TaskServerWorkItem. Same as TaskeServerWorkItem.new(), but does not cause parser error if TaskServer plugin is not loaded
+func create_work_item() ->  TaskServerWorkItem:
+	var ret = TaskServerWorkItem.new()
+	return ret
 
 
 ## Post TaskServerWorkItem to first worker thread available

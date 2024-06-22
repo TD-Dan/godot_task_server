@@ -35,7 +35,9 @@ func connect_to_taskserver():
 	info_label.text = "TaskServer is active"
 	thread_info_label.text = "Waiting for thread status.."
 	
-	autoload_task_server.pull_status_report()
+	%ThreadCountSpinBox.set_value_no_signal(autoload_task_server.num_threads)
+	
+	autoload_task_server.pull_status_report.call_deferred()
 
 
 func _on_work_ready(work_item : TaskServerWorkItem):
@@ -55,8 +57,14 @@ func _on_work_ready(work_item : TaskServerWorkItem):
 
 
 func _on_status_report(ticket_counter, work_queue_length, thread_count, threads_active):
+	print("updating thread status")
 	thread_info_label.text = "Ticket nr: %s\nWork queue length: %s\nThread count: %s\nThreads busy: %s" % [ticket_counter, work_queue_length, thread_count, threads_active]
 
 
 func _on_button_pressed():
 	EditorInterface.edit_node(autoload_task_server)
+
+
+func _on_thread_count_spin_box_value_changed(value):
+	autoload_task_server.num_threads = value
+	%ThreadCountSpinBox.set_value_no_signal(value)
