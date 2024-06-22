@@ -57,7 +57,7 @@ func _on_work_ready(work_item : TaskServerWorkItem):
 
 
 func _on_status_report(ticket_counter, work_queue_length, thread_count, threads_active):
-	print("updating thread status")
+	#print("updating thread status")
 	thread_info_label.text = "Ticket nr: %s\nWork queue length: %s\nThread count: %s\nThreads busy: %s" % [ticket_counter, work_queue_length, thread_count, threads_active]
 
 
